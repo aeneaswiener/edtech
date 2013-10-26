@@ -66,12 +66,16 @@ class StudentAPI(webapp2.RequestHandler):
 class Student(webapp2.RequestHandler):
     def get(self,class_id):
         self.response.headers['Content-Type'] = 'text/html'
-        if class_id is not None:
-            student = ndb.Key( 'StudentModel', int(class_id) ).get()
-            if student is not None:
-                self.response.write(student.tohtml())
-            else:
-                self.response.write("<html><head><title>Class Room</title></head><body><h1>Student not found</h1></body></html>")
+        student = ndb.Key( 'StudentModel', int(class_id) ).get()
+        if student is not None:
+            student = student.tohtml()
+
+        template_values = {
+            'student': student,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('student.html')
+        self.response.write(template.render(template_values))
 
 class StudentListAPI(webapp2.RequestHandler):
     def post(self):
@@ -123,13 +127,20 @@ class StudentListAPI(webapp2.RequestHandler):
 
 class StudentList(webapp2.RequestHandler):
     def get(self):
-        class_rooms = StudentModel.query().fetch()
+        students_object = StudentModel.query().fetch()
+        print students_object
 
-        print class_rooms
         self.response.headers['Content-Type'] = 'text/html'
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(class_rooms))
+        students = []
+        for student in students_object:
+            students.append(student.todict())
+        template_values = {
+            'students': students,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('students.html')
+        self.response.write(template.render(template_values))
 
 class StudentAdd(webapp2.RequestHandler):
     def get(self):
