@@ -1,0 +1,76 @@
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+    $(document).ready(function(){
+
+      $("button.get").click(function(){
+        $.ajax({
+            type: 'GET',
+            url: "http://localhost:8888/api/data_view",
+            async: false,
+            contentType: "application/json",
+            success: function(result) {
+                alert(JSON.stringify(result));
+               console.dir(result);
+            },
+            error: function(e) {
+                alert(JSON.stringify(e));
+               console.log(e.message);
+            }
+        });
+      });
+
+      $("button.put").click(function(){
+        var obj = {"title":"My Map View"};
+        obj = JSON.stringify(obj);
+        $.ajax({
+            type: 'PUT',
+            url: "http://localhost:8888/api/data_view/3",
+           xhrFields: {
+              withCredentials: true
+           },
+            async: false,
+            contentType: "application/json",
+            data: obj,
+            success: function(result) {
+                alert(JSON.stringify(result));
+               console.dir(result);
+            },
+            error: function(e) {
+                alert(JSON.stringify(e));
+               console.log(e.message);
+            }
+        });
+      });
+
+      $("button.post").click(function(){
+        var obj = {"title":"New Map vew 4"};
+        obj = JSON.stringify(obj);
+        $.ajax({
+           type: 'POST',
+           url: "http://localhost:8888/api/data_view",
+           xhrFields: {
+              withCredentials: true
+           },
+            async: false,
+            contentType: "application/json",
+            data: obj,
+            success: function(result) {
+               alert(JSON.stringify(result));
+               console.dir(result);
+            },
+            error: function(e) {
+               alert(JSON.stringify(e));
+               console.log(e.message);
+            }
+        });
+      });
+    });
+</script>
+</head>
+<body>
+<button class='get'>Click me to GET</button>
+<button class='put'>Click me to PUT</button>
+<button class='post'>Click me to POST</button>
+</body>
