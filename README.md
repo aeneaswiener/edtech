@@ -1,4 +1,4 @@
 edtech
 ======
 
-Hackathon project
+Hackathon project.
