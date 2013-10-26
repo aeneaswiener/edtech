@@ -2,7 +2,7 @@
 function addclass(classroom) {
     obj = JSON.stringify(classroom);
     $.ajax({
-        type: 'PUT',
+        type: 'POST',
         url: "/api/classroom",
         xhrFields: {
             withCredentials: true

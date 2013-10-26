@@ -14,7 +14,7 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('Hello, Gethin!')
 
 class ClassRoom(webapp2.RequestHandler):
-    def put(self):
+    def post(self):
         logging.error(self.request.headers['Content-Type'])
         if self.request.headers['Content-Type'].startswith('application/json'):
             body = json.loads(self.request.body)
