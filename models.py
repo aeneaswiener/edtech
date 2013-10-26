@@ -3,6 +3,7 @@ from google.appengine.ext.ndb import polymodel
 from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import images
 import math
+import time
 
 class EdTechModel(ndb.Model):
     def to_dict(self):
@@ -36,7 +37,7 @@ class StudentModel(EdTechModel):
     def todict(self):
         average_grades = []
         for average_grade in self.AverageGrades:
-            average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
+            average_grades.append({ 'Date': int(average_grade.Date.strftime('%Y')), 'Grade': average_grade.Grade})
 
         image_key = None
         if self.Image is not None:
