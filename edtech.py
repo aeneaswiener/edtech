@@ -48,30 +48,45 @@ class ClassRoom(webapp2.RequestHandler):
             
 class ClassRoomListAPI(webapp2.RequestHandler):
     def post(self):
-        self.response.headers['Content-Type'] = 'application/json'
-        body = json.loads(self.request.body)
+        if self.request.content_type.startswith('application/json'):
+            self.response.headers['Content-Type'] = 'application/json'
+            body = json.loads(self.request.body)
 
-        subjects = []
-        for subject in body['Subjects']:
-            subjects.append(SubjectModel(Name=subject))
+            subjects = []
+            for subject in body['Subjects']:
+                subjects.append(SubjectModel(Name=subject))
             
-        average_grades = []
-        for average_grade in body['AverageGrades']:
-            average_grades.append(AverageGradeModel(
-                Date=datetime.datetime.strptime(average_grade['Date'],"%a %b %d %H:%M:%S %Y"),
-                Grade=average_grade['Grade']))
+            average_grades = []
+            for average_grade in body['AverageGrades']:
+                average_grades.append(AverageGradeModel(
+                    Date=datetime.datetime.strptime(average_grade['Date'],"%Y-%m-%d"),
+                    Grade=average_grade['Grade']))
 
-        class_room = ClassRoomModel(Name=body['Name'],
-                                    SchoolName=body['SchoolName'],
-                                    NumberOfStundents=body['NumberOfStudents'],
-                                    Subjects=subjects,
-                                    Location=LocationModel(Name=body['Location']['Name'],
-                                                           Latitude=body['Location']['Latitude'],
-                                                           Longitude=body['Location']['Longitude']),
-                                    AverageGrades=average_grades,
-                                    Description=body['Description'])
-        class_room.put()
-        self.response.write(json.dumps(class_room.todict()))
+            class_room = ClassRoomModel(Name=body['Name'],
+                                        SchoolName=body['SchoolName'],
+                                        NumberOfStudents=body['NumberOfStudents'],
+                                        Subjects=subjects,
+                                        Location=LocationModel(Name=body['Location']['Name'],
+                                                               Latitude=body['Location']['Latitude'],
+                                                               Longitude=body['Location']['Longitude']),
+                                        AverageGrades=average_grades,
+                                        Description=body['Description'])
+            class_room.put()
+            self.response.write(json.dumps(class_room.todict()))
+        else:
+            self.response.headers['Content-Type'] = 'text/html'
+            subjects = []
+            average_grades = []
+            class_room = ClassRoomModel(Name=self.request.get('Name'),
+                                        SchoolName=self.request.get('SchoolName'),
+                                        NumberOfStudents=int(self.request.get('NumberOfStudents')),
+                                        Subjects=subjects,
+                                        Location=LocationModel(Name=self.request.get('Location_Name'),
+                                                               Latitude=float(self.request.get('Latitude')),
+                                                               Longitude=float(self.request.get('Longitude'))),
+                                        AverageGrades=average_grades,
+                                        Description=self.request.get('Description'))
+            class_room.put()
 
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'

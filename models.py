@@ -19,7 +19,7 @@ class AverageGradeModel(ndb.Model):
 class ClassRoomModel(ndb.Model):
     Name = ndb.StringProperty()
     SchoolName = ndb.StringProperty()
-    NumberOfStundents = ndb.IntegerProperty()
+    NumberOfStudents = ndb.IntegerProperty()
     Subjects = ndb.StructuredProperty(SubjectModel, repeated=True)
     Location = ndb.StructuredProperty(LocationModel, repeated=False)
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
@@ -48,6 +48,7 @@ class ClassRoomModel(ndb.Model):
                  'Location': { 'Name': self.Location.Name,
                                'Latitude': self.Location.Latitude,
                                'Longitude': self.Location.Longitude },
+                 'NumberOfStundents': self.NumberOfStundents,
                  'AverageGrades': average_grades,
                  'Description': self.Description,
                  'Image': image_key }
