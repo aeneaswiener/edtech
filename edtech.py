@@ -136,6 +136,72 @@ class ClassRoomAdd(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('classroom_add.html')
         self.response.write(template.render(template_values))
 
+class ClassRoomSubjectListAPI(webapp2.RequestHandler):
+    def get(self,class_id):        
+        self.response.headers['Content-Type'] = 'application/json'
+        class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+        subjects = []
+        for subject in class_room.Subjects:
+            subjects.append(subject.Name)
+        self.response.write(json.dumps(subjects))
+
+    def post(self,class_id):
+        subject_name = ""
+        if self.request.content_type.startswith('application/json'):
+            subject_name = json.loads(self.request.body)
+        else:
+            subject_name = self.request.get("Name")
+        class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+        subject_already_there = False
+        for subject in class_room.Subjects:
+            if subject.Name == subject_name:
+                subject_already_there = True
+                break
+        if subject_already_there == False:
+            class_room.Subjects.append(SubjectModel(Name=subject_name))
+            class_room.put()
+        if self.request.content_type.startswith('application/json'):
+            self.response.headers['Content-Type'] = 'application/json'
+            subjects = []
+            for subject in class_room.Subjects:
+                subjects.append(subject.Name)
+            self.response.write(json.dumps(subjects))
+        else:
+            self.response.headers['Content-Type'] = 'text/html'
+            self.response.write("<html><body>This is for aeneas</body></html>")
+
+class ClassRoomAverageGradeListAPI(webapp2.RequestHandler):
+    def get(self,class_id):        
+        self.response.headers['Content-Type'] = 'application/json'
+        class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+        average_grades = []
+        for average_grade in class_room.AverageGrades:
+            average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
+        self.response.write(json.dumps(average_grades))
+
+    def post(self,class_id):
+        average_grade_date = ""
+        average_grade_grade = ""
+        if self.request.content_type.startswith('application/json'):
+            json_body = json.loads(self.request.body)
+            average_grade_date = json_body['Date']
+            average_grade_grade = json_body['Grade']
+        else:
+            average_grade_date = self.request.get("Date")
+            average_grade_grade = float(self.request.get("Grade"))
+        class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+        class_room.AverageGrades.append(AverageGradeModel(Date=datetime.datetime.strptime(average_grade_date,"%Y-%m-%d"),Grade=average_grade_grade))
+        class_room.put()
+        if self.request.content_type.startswith('application/json'):
+            self.response.headers['Content-Type'] = 'application/json'
+            average_grades = []
+            for average_grade in class_room.AverageGrades:
+                average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
+            self.response.write(json.dumps(average_grades))
+        else:
+            self.response.headers['Content-Type'] = 'text/html'
+            self.response.write("<html><body>This is for aeneas</body></html>")
+
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/signup.html', SignUpPage),
@@ -144,6 +210,8 @@ application = webapp2.WSGIApplication([
     ('/classroom/add', ClassRoomAdd),
     ('/classroom/(.*)', ClassRoom),
     ('/api/classroom', ClassRoomListAPI),
+    ('/api/classroom/(.*)/subjects', ClassRoomSubjectListAPI),
+    ('/api/classroom/(.*)/grades', ClassRoomAverageGradeListAPI),
     ('/api/classroom/(.*)', ClassRoomAPI)
 ], debug=True)
 
