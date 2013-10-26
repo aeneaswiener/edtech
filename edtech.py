@@ -21,7 +21,7 @@ class ClassRoom(webapp2.RequestHandler):
 
             subjects = []
             for subject in body['Subjects']:
-                subjects.append(SubjectModel(id=subject))
+                subjects.append(SubjectModel(Name=subject))
 
             average_grades = []
             for average_grade in body['AverageGrades']:
@@ -39,11 +39,24 @@ class ClassRoom(webapp2.RequestHandler):
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             class_room.put()
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.write(json.dumps(class_room.todict()))
+
+    def get(self,class_id):
+        if class_id is not None:
+            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+            if class_room is not None:
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.write(json.dumps(class_room.todict()))
+            else:
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.write(json.dumps({'error': 'ClassRoom not found'}))
 
 
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/api/classroom', ClassRoom)
+    ('/api/classroom', ClassRoom),
+    ('/api/classroom/(.*)', ClassRoom)
 ], debug=True)
 
