@@ -31,6 +31,22 @@ class MainPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
+class TestPage(webapp2.RequestHandler):
+    def get(self):
+        class_rooms_object = StudentModel.query().fetch()
+
+        class_rooms = []
+        for class_room in class_rooms_object:
+            class_rooms.append( class_room.todict() )
+        template_values = {
+            'class_rooms': class_rooms,
+        }
+
+        self.response.headers['Content-Type'] = 'text/html'
+
+        template = JINJA_ENVIRONMENT.get_template('/test/subjects.html')
+        self.response.write(template.render(template_values))
+
 class SignUpPage(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
@@ -208,6 +224,7 @@ class StudentAverageGradeListAPI(webapp2.RequestHandler):
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/test', TestPage),
     ('/signup.html', SignUpPage),
     ('/signin.html', SignInPage),
     ('/students', StudentList),
