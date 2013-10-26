@@ -16,12 +16,11 @@ class AverageGradeModel(ndb.Model):
     Date = ndb.DateProperty()
     Grade = ndb.FloatProperty()
 
-class ClassRoomModel(ndb.Model):
+class StudentModel(ndb.Model):
     Name = ndb.StringProperty()
     SchoolName = ndb.StringProperty()
-    NumberOfStudents = ndb.IntegerProperty()
     Subjects = ndb.StructuredProperty(SubjectModel, repeated=True)
-    Location = ndb.StructuredProperty(LocationModel, repeated=False)
+    SchoolLocation = ndb.StructuredProperty(LocationModel, repeated=False)
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
@@ -45,10 +44,9 @@ class ClassRoomModel(ndb.Model):
                  'Name': self.Name,
                  'SchoolName': self.SchoolName,
                  'Subjects': subjects,
-                 'Location': { 'Name': self.Location.Name,
-                               'Latitude': self.Location.Latitude,
-                               'Longitude': self.Location.Longitude },
-                 'NumberOfStudents': self.NumberOfStudents,
+                 'SchoolLocation': { 'Name': self.SchoolLocation.Name,
+                               'Latitude': self.SchoolLocation.Latitude,
+                               'Longitude': self.SchoolLocation.Longitude },
                  'AverageGrades': average_grades,
                  'Description': self.Description,
                  'Image': image_key }

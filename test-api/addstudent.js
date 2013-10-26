@@ -3,7 +3,7 @@ function addclass(classroom) {
     obj = JSON.stringify(classroom);
     $.ajax({
         type: 'POST',
-        url: "/api/classroom",
+        url: "/api/students",
         xhrFields: {
             withCredentials: true
         },
@@ -23,15 +23,15 @@ function addclass(classroom) {
 
 $(document).ready(addclass(
     {
-	Name: 'Grade 8',
+	Name: 'Felix',
 	SchoolName: 'Phoenix High School',
 	NumberOfStudents: 23,
 	Subjects: [ 'Physics', 'Maths' ],
-	Location: { Name: 'Phoenix High School, White City',
-		    Latitude: 289133.33,
-		    Longitude: 38928.3 },
-	AverageGrades: [{ Date: 'Sat Oct 13 13:36:20 2013', Grade: 10},
-			{ Date: 'Sat Oct 26 13:36:20 2013', Grade: 7}],
-	Description: 'Cool School'
+	SchoolLocation: { Name: 'Phoenix High School, White City',
+		    Latitude: 51.514490,
+		    Longitude: -0.116849 },
+	AverageGrades: [{ Date: '2013-10-13', Grade: 10},
+			{ Date: '2013-10-26', Grade: 7}],
+	Description: 'I need help'
     }
 ))
