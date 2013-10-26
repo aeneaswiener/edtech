@@ -77,7 +77,7 @@ class StudentAPI(webapp2.RequestHandler):
         if class_id is not None:
             student = ndb.Key( 'StudentModel', int(class_id) ).get()
             if student is not None:
-                self.response.write(json.dumps(student.to_dict()))
+                self.response.write(json.dumps(student.to_dict(),cls=NDBJSONEncoder))
             else:
                 self.response.write(json.dumps({'error': 'Student not found'}))
 
@@ -116,7 +116,7 @@ class StudentListAPI(webapp2.RequestHandler):
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             student.put()
-            self.response.write(json.dumps(student.to_dict()))
+            self.response.write(json.dumps(student.to_dict(),cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/html'
             average_grades = []
@@ -136,7 +136,7 @@ class StudentListAPI(webapp2.RequestHandler):
         return_value = []
         for student in students:
             return_value.append(student.to_dict())
-        self.response.write(json.dumps(return_value))
+        self.response.write(json.dumps(return_value,cls=NDBJSONEncoder))
 
 class StudentList(webapp2.RequestHandler):
     def get(self):
@@ -164,40 +164,6 @@ class StudentAdd(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('student_add.html')
         self.response.write(template.render(template_values))
 
-class StudentSubjectListAPI(webapp2.RequestHandler):
-    def get(self,class_id):
-        self.response.headers['Content-Type'] = 'application/json'
-        student = ndb.Key( 'StudentModel', int(class_id) ).get()
-        subjects = []
-        for subject in student.Subjects:
-            subjects.append(subject.Name)
-        self.response.write(json.dumps(subjects))
-
-    def post(self,class_id):
-        subject_name = ""
-        if self.request.content_type.startswith('application/json'):
-            subject_name = json.loads(self.request.body)
-        else:
-            subject_name = self.request.get("Name")
-        student = ndb.Key( 'StudentModel', int(class_id) ).get()
-        subject_already_there = False
-        for subject in student.Subjects:
-            if subject.Name == subject_name:
-                subject_already_there = True
-                break
-        if subject_already_there == False:
-            student.Subjects.append(SubjectModel(Name=subject_name))
-            student.put()
-        if self.request.content_type.startswith('application/json'):
-            self.response.headers['Content-Type'] = 'application/json'
-            subjects = []
-            for subject in student.Subjects:
-                subjects.append(subject.Name)
-            self.response.write(json.dumps(subjects))
-        else:
-            self.response.headers['Content-Type'] = 'text/html'
-            self.response.write("<html><body>This is for aeneas</body></html>")
-
 class StudentAverageGradeListAPI(webapp2.RequestHandler):
     def get(self,class_id):
         self.response.headers['Content-Type'] = 'application/json'
@@ -205,7 +171,7 @@ class StudentAverageGradeListAPI(webapp2.RequestHandler):
         average_grades = []
         for average_grade in student.AverageGrades:
             average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
-        self.response.write(json.dumps(average_grades))
+        self.response.write(json.dumps(average_grades,cls=NDBJSONEncoder))
 
     def post(self,class_id):
         average_grade_date = ""
@@ -225,7 +191,7 @@ class StudentAverageGradeListAPI(webapp2.RequestHandler):
             average_grades = []
             for average_grade in student.AverageGrades:
                 average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
-            self.response.write(json.dumps(average_grades))
+            self.response.write(json.dumps(average_grades,cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/html'
             self.response.write("<html><body>This is for aeneas</body></html>")

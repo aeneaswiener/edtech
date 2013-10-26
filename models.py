@@ -5,11 +5,14 @@ from google.appengine.api import images
 import math
 import json
 import time
+import datetime
 
 class NDBJSONEncoder(json.JSONEncoder):
     def default(self,obj):
         if isinstance(obj,ndb.Key):
             return obj.get().to_dict()
+        elif isinstance(obj,datetime.date):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
         return super(NDBJSONEncoder,self).default(obj)
 
 class EdTechModel(ndb.Model):
@@ -51,25 +54,4 @@ class StudentModel(EdTechModel):
     Image = ndb.BlobKeyProperty()
     def tohtml(self):
         return "<html><head><title>Class Room</title></head><body>" + self.Name + "</body></html>"
-
-    def to_dict(self):
-        average_grades = []
-        for average_grade in self.AverageGrades:
-            average_grades.append({ 'Date': int(average_grade.Date.strftime('%Y')), 'Grade': average_grade.Grade})
-
-        image_key = None
-        if self.Image is not None:
-            image_key = self.Image.urlsafe()
-
-        return { 'id': self.key.id(),
-                 'Name': self.Name,
-                 'SchoolName': self.SchoolName,
-                 'Subject': self.Subject,
-                 'SchoolLocation': { 'Name': self.SchoolLocation.Name,
-                               'Latitude': self.SchoolLocation.Latitude,
-                               'Longitude': self.SchoolLocation.Longitude },
-                 'AverageGrades': average_grades,
-                 'Description': self.Description,
-                 'Image': image_key }
-
 
