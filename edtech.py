@@ -60,17 +60,16 @@ class ClassRoom(webapp2.RequestHandler):
 
     def get(self,class_id):
         if class_id is not None:
-            logging.error(self.request.content_type)
             class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
             if class_room is not None:
-                if self.request.content_type.startswith('application/json'):
+                if self.request.headers['Content_Type'].startswith('application/json'):
                     self.response.headers['Content-Type'] = 'application/json'
                     self.response.write(json.dumps(class_room.todict()))
                 else:
                     self.response.headers['Content-Type'] = 'text/html'
                     self.response.write(class_room.tohtml())
             else:
-                if self.request.content_type.startswith('application/json'):
+                if self.request.headers['Content_Type'].startswith('application/json'):
                     self.response.headers['Content-Type'] = 'application/json'
                     self.response.write(json.dumps({'error': 'ClassRoom not found'}))
                 else:
