@@ -84,13 +84,13 @@ class ClassRoomListAPI(webapp2.RequestHandler):
                     Date=datetime.datetime.strptime(average_grade['Date'],"%Y-%m-%d"),
                     Grade=average_grade['Grade']))
 
+            location=LocationModel(**body['Location'])
+
             class_room = ClassRoomModel(Name=body['Name'],
                                         SchoolName=body['SchoolName'],
                                         NumberOfStudents=body['NumberOfStudents'],
                                         Subjects=subjects,
-                                        Location=LocationModel(Name=body['Location']['Name'],
-                                                               Latitude=body['Location']['Latitude'],
-                                                               Longitude=body['Location']['Longitude']),
+                                        Location=location,
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             class_room.put()
@@ -127,12 +127,21 @@ class ClassRoomList(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
                 
+class ClassRoomAdd(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values = {
+            'greetings': 'hello',
+        }
+        template = JINJA_ENVIRONMENT.get_template('classroom_add.html')
+        self.response.write(template.render(template_values))
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/signup.html', SignUpPage),
     ('/signin.html', SignInPage),
     ('/classroom', ClassRoomList),
+    ('/classroom/add', ClassRoomAdd),
     ('/classroom/(.*)', ClassRoom),
     ('/api/classroom', ClassRoomListAPI),
     ('/api/classroom/(.*)', ClassRoomAPI)
