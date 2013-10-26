@@ -7,3 +7,5 @@ threadsafe: true
 handlers:
 - url: /.*
   script: edtech.application
+- name: jinja2
+  version: latest

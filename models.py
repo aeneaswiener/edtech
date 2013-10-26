@@ -25,7 +25,3 @@ class ClassRoomModel(ndb.Model):
     AverageGrade = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
 
-    
-    
-        
-    
