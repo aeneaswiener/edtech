@@ -84,13 +84,13 @@ class ClassRoomListAPI(webapp2.RequestHandler):
                     Date=datetime.datetime.strptime(average_grade['Date'],"%Y-%m-%d"),
                     Grade=average_grade['Grade']))
 
+            location=LocationModel(**body['Location'])
+
             class_room = ClassRoomModel(Name=body['Name'],
                                         SchoolName=body['SchoolName'],
                                         NumberOfStudents=body['NumberOfStudents'],
                                         Subjects=subjects,
-                                        Location=LocationModel(Name=body['Location']['Name'],
-                                                               Latitude=body['Location']['Latitude'],
-                                                               Longitude=body['Location']['Longitude']),
+                                        Location=location,
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             class_room.put()
