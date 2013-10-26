@@ -17,11 +17,16 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.headers['Content-Type'] = 'text/html'
+        class_rooms_object = ClassRoomModel.query().fetch()
 
+        class_rooms = []
+        for class_room in class_rooms_object:
+            class_rooms.append( class_room.todict() )
         template_values = {
-            'greetings': 'hello',
+            'class_rooms': class_rooms,
         }
+
+        self.response.headers['Content-Type'] = 'text/html'
 
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
@@ -120,12 +125,13 @@ class ClassRoomListAPI(webapp2.RequestHandler):
 
 class ClassRoomList(webapp2.RequestHandler):
     def get(self):
+        class_rooms = ClassRoomModel.query().fetch()
+
+        print class_rooms
         self.response.headers['Content-Type'] = 'text/html'
-        template_values = {
-            'greetings': 'hello',
-        }
+
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(template_values))
+        self.response.write(template.render(class_rooms))
                 
 class ClassRoomAdd(webapp2.RequestHandler):
     def get(self):
