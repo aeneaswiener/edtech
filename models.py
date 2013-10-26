@@ -48,7 +48,7 @@ class ClassRoomModel(ndb.Model):
                  'Location': { 'Name': self.Location.Name,
                                'Latitude': self.Location.Latitude,
                                'Longitude': self.Location.Longitude },
-                 'NumberOfStundents': self.NumberOfStundents,
+                 'NumberOfStudents': self.NumberOfStudents,
                  'AverageGrades': average_grades,
                  'Description': self.Description,
                  'Image': image_key }
