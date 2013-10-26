@@ -25,6 +25,9 @@ class ClassRoomModel(ndb.Model):
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
+    def tohtml(self):
+        return "<html><head><title>Class Room</title></head><body>" + self.Name + "</body></html>"
+
     def todict(self):
         subjects = []
         for subject in self.Subjects:
