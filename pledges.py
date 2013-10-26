@@ -15,7 +15,7 @@ class PledgesAPI(webapp2.RequestHandler):
         pledge_dict = key.get().to_dict()        
         if GetAcceptType(self.request).startswith('application/json'):
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.write(json.dumps(tutor_dict))
+            self.response.write(json.dumps(tutor_dict,cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/plain'
             self.response.write(pledge_dict['HoursPledged'])
@@ -31,7 +31,7 @@ class PledgesListAPI(webapp2.RequestHandler):
                                  HoursPledged=pledge_dir['HoursPledged'],
                                  Student=ndb.Key( 'StudentModel', pledge_dir['Student'] ))
             pledge.put()
-            self.response.write(json.dumps(pledge.to_dict()))
+            self.response.write(json.dumps(pledge.to_dict(),cls=NDBJSONEncoder))
         
     def get(self,tutor_id):
         tutor_key = ndb.Key( 'TutorModel', int(tutor_id))
@@ -41,7 +41,7 @@ class PledgesListAPI(webapp2.RequestHandler):
             return_value = []
             for pledge in pledges:
                 return_value.append(pledge.to_dict())
-            self.response.write(json.dumps(return_value))
+            self.response.write(json.dumps(return_value,cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/plain'
             for pledge in pledges:
