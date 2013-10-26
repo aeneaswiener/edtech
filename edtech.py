@@ -101,10 +101,6 @@ class StudentListAPI(webapp2.RequestHandler):
             self.response.headers['Content-Type'] = 'application/json'
             body = json.loads(self.request.body)
 
-            subjects = []
-            for subject in body['Subjects']:
-                subjects.append(SubjectModel(Name=subject))
-
             average_grades = []
             for average_grade in body['AverageGrades']:
                 average_grades.append(AverageGradeModel(
