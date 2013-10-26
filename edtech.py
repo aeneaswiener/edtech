@@ -68,7 +68,8 @@ class Student(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/html'
         student = ndb.Key( 'StudentModel', int(class_id) ).get()
         if student is not None:
-            student = student.tohtml()
+            student = student.todict()
+        print student
 
         template_values = {
             'student': student,
@@ -82,6 +83,10 @@ class StudentListAPI(webapp2.RequestHandler):
         if self.request.content_type.startswith('application/json'):
             self.response.headers['Content-Type'] = 'application/json'
             body = json.loads(self.request.body)
+
+            subjects = []
+            for subject in body['Subjects']:
+                subjects.append(SubjectModel(Name=subject))
 
             average_grades = []
             for average_grade in body['AverageGrades']:
@@ -122,14 +127,21 @@ class StudentListAPI(webapp2.RequestHandler):
 
 class StudentList(webapp2.RequestHandler):
     def get(self):
-        students = StudentModel.query().fetch()
+        students_object = StudentModel.query().fetch()
+        print students_object
 
-        print students
         self.response.headers['Content-Type'] = 'text/html'
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(students))
-                
+        students = []
+        for student in students_object:
+            students.append(student.todict())
+        template_values = {
+            'students': students,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('students.html')
+        self.response.write(template.render(template_values))
+
 class StudentAdd(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
@@ -138,6 +150,40 @@ class StudentAdd(webapp2.RequestHandler):
         }
         template = JINJA_ENVIRONMENT.get_template('student_add.html')
         self.response.write(template.render(template_values))
+
+class StudentSubjectListAPI(webapp2.RequestHandler):
+    def get(self,class_id):
+        self.response.headers['Content-Type'] = 'application/json'
+        student = ndb.Key( 'StudentModel', int(class_id) ).get()
+        subjects = []
+        for subject in student.Subjects:
+            subjects.append(subject.Name)
+        self.response.write(json.dumps(subjects))
+
+    def post(self,class_id):
+        subject_name = ""
+        if self.request.content_type.startswith('application/json'):
+            subject_name = json.loads(self.request.body)
+        else:
+            subject_name = self.request.get("Name")
+        student = ndb.Key( 'StudentModel', int(class_id) ).get()
+        subject_already_there = False
+        for subject in student.Subjects:
+            if subject.Name == subject_name:
+                subject_already_there = True
+                break
+        if subject_already_there == False:
+            student.Subjects.append(SubjectModel(Name=subject_name))
+            student.put()
+        if self.request.content_type.startswith('application/json'):
+            self.response.headers['Content-Type'] = 'application/json'
+            subjects = []
+            for subject in student.Subjects:
+                subjects.append(subject.Name)
+            self.response.write(json.dumps(subjects))
+        else:
+            self.response.headers['Content-Type'] = 'text/html'
+            self.response.write("<html><body>This is for aeneas</body></html>")
 
 class StudentAverageGradeListAPI(webapp2.RequestHandler):
     def get(self,class_id):
