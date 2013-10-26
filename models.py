@@ -4,8 +4,8 @@ from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import images
 import math
 
-class SubjectsModel(ndb.Model):
-    Name = ndb.StringProperty()
+class SubjectModel(ndb.Model):
+    pass
 
 class LocationModel(ndb.Model):
     Name = ndb.StringProperty()
@@ -20,10 +20,11 @@ class ClassRoomModel(ndb.Model):
     Name = ndb.StringProperty()
     SchoolName = ndb.StringProperty()
     NumberOfStundents = ndb.IntegerProperty()
-    Subjects = ndb.StructuredProperty(SubjectsModel, repeated=True)
+    Subjects = ndb.StructuredProperty(SubjectModel, repeated=True)
     Location = ndb.StructuredProperty(LocationModel, repeated=False)
-    AverageGrade = ndb.StructuredProperty(AverageGradeModel, repeated=True)
+    AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
+    Image = ndb.BlobKeyProperty()
 
     
     

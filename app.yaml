@@ -5,5 +5,12 @@ api_version: 1
 threadsafe: true
 
 handlers:
+
+- url: /test-api
+  static_dir: test-api
+
 - url: /.*
   script: edtech.application
+
+
+
