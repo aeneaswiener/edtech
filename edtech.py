@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from models import *
 from tutors import *
+from pledges import *
 
 import webapp2
 import jinja2
@@ -84,11 +85,6 @@ class StudentListAPI(webapp2.RequestHandler):
         if self.request.content_type.startswith('application/json'):
             self.response.headers['Content-Type'] = 'application/json'
             body = json.loads(self.request.body)
-
-            subjects = []
-            for subject in body['Subjects']:
-                subjects.append(SubjectModel(Name=subject))
-
             average_grades = []
             for average_grade in body['AverageGrades']:
                 average_grades.append(AverageGradeModel(
@@ -123,7 +119,7 @@ class StudentListAPI(webapp2.RequestHandler):
         students = StudentModel.query().fetch()
         return_value = []
         for student in students:
-            return_value.append(student.todict())
+            return_value.append(student.to_dict())
         self.response.write(json.dumps(return_value))
 
 class StudentList(webapp2.RequestHandler):
@@ -228,6 +224,8 @@ application = webapp2.WSGIApplication([
     ('/api/students', StudentListAPI),
     ('/api/students/(.*)/grades', StudentAverageGradeListAPI),
     ('/api/students/(.*)', StudentAPI),
+    ('/api/tutors/(.*)/pledges', PledgesListAPI),
+    ('/api/tutors/(.*)/pledges/(.*)', PledgesAPI),
     ('/api/tutors/(.*)', TutorAPI),
     ('/api/tutors', TutorListAPI)
 ], debug=True)

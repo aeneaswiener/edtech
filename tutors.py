@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from models import *
+from util import *
 
 import webapp2
 import jinja2
@@ -8,26 +9,16 @@ import logging
 import json
 import os
 
-def GetAcceptType(request):
-    try:
-        accept_header = request.headers['Accept']
-    except KeyError:
-        accept_header = None
-    if accept_header is not None:
-        return accept_header
-    else:
-        return "text/plain"
-
 class TutorAPI(webapp2.RequestHandler):
     def get(self,tutor_id):
         key = ndb.Key( 'TutorModel', int(tutor_id))
-        tutor = key.get()
+        tutor_dict = key.get().to_dict()        
         if GetAcceptType(self.request).startswith('application/json'):
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.write(json.dumps(tutor.to_dict()))
+            self.response.write(json.dumps(tutor_dict,cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/plain'
-            self.response.write(tutor.Name)
+            self.response.write(tutor_dict['Name'])
             
 
 class TutorListAPI(webapp2.RequestHandler):
@@ -37,7 +28,7 @@ class TutorListAPI(webapp2.RequestHandler):
             tutor_dir = json.loads(self.request.body)
             tutor = TutorModel(**tutor_dir)
             tutor.put()
-            self.response.write(json.dumps(tutor.to_dict()))
+            self.response.write(json.dumps(tutor.to_dict(),cls=NDBJSONEncoder))
         
     def get(self):
         tutors = TutorModel.query().fetch()
@@ -46,7 +37,7 @@ class TutorListAPI(webapp2.RequestHandler):
             return_value = []
             for tutor in tutors:
                 return_value.append(tutor.to_dict())
-            self.response.write(json.dumps(return_value))
+            self.response.write(json.dumps(return_value,cls=NDBJSONEncoder))
         else:
             self.response.headers['Content-Type'] = 'text/plain'
             for tutor in tutors:

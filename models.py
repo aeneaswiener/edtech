@@ -3,6 +3,13 @@ from google.appengine.ext.ndb import polymodel
 from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import images
 import math
+import json
+
+class NDBJSONEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if isinstance(obj,ndb.Key):
+            return obj.get().to_dict()
+        return super(NDBJSONEncoder,self).default(obj)
 
 class EdTechModel(ndb.Model):
     def to_dict(self):
@@ -19,8 +26,19 @@ class AverageGradeModel(EdTechModel):
     Date = ndb.DateProperty()
     Grade = ndb.FloatProperty()
 
+class PledgeModel(EdTechModel):
+    HoursPledged = ndb.IntegerProperty()
+    Student = ndb.KeyProperty(kind='StudentModel')
+
 class TutorModel(EdTechModel):
     Name = ndb.StringProperty()
+    def to_dict(self):
+        result = super(TutorModel,self).to_dict()
+        result['Pledges'] = []
+        pledges = PledgeModel.query(ancestor=self.key).fetch()
+        for pledge in pledges:
+            result['Pledges'].append(pledge.to_dict())
+        return result
 
 class StudentModel(EdTechModel):
     Name = ndb.StringProperty()
@@ -33,7 +51,7 @@ class StudentModel(EdTechModel):
     def tohtml(self):
         return "<html><head><title>Class Room</title></head><body>" + self.Name + "</body></html>"
 
-    def todict(self):
+    def to_dict(self):
         average_grades = []
         for average_grade in self.AverageGrades:
             average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
@@ -52,4 +70,5 @@ class StudentModel(EdTechModel):
                  'AverageGrades': average_grades,
                  'Description': self.Description,
                  'Image': image_key }
+
 
