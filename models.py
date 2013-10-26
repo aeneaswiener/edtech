@@ -4,6 +4,7 @@ from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import images
 import math
 import json
+import time
 
 class NDBJSONEncoder(json.JSONEncoder):
     def default(self,obj):
@@ -54,7 +55,7 @@ class StudentModel(EdTechModel):
     def to_dict(self):
         average_grades = []
         for average_grade in self.AverageGrades:
-            average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
+            average_grades.append({ 'Date': int(average_grade.Date.strftime('%Y')), 'Grade': average_grade.Grade})
 
         image_key = None
         if self.Image is not None:
