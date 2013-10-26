@@ -16,7 +16,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
@@ -29,10 +28,10 @@ class MainPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
-class ClassRoom(webapp2.RequestHandler):
+class ClassRoomAPI(webapp2.RequestHandler):
     def post(self):
         logging.error(self.request.headers['Content-Type'])
-        if self.request.content_type.startswith('application/json'):
+        if getcontenttype(self.request).startswith('application/json'):
             body = json.loads(self.request.body)
 
             subjects = []
@@ -62,30 +61,44 @@ class ClassRoom(webapp2.RequestHandler):
         if class_id is not None:
             class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
             if class_room is not None:
-                if self.request.headers['Content_Type'].startswith('application/json'):
-                    self.response.headers['Content-Type'] = 'application/json'
-                    self.response.write(json.dumps(class_room.todict()))
-                else:
-                    self.response.headers['Content-Type'] = 'text/html'
-                    self.response.write(class_room.tohtml())
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.write(json.dumps(class_room.todict()))
             else:
-                if self.request.headers['Content_Type'].startswith('application/json'):
-                    self.response.headers['Content-Type'] = 'application/json'
-                    self.response.write(json.dumps({'error': 'ClassRoom not found'}))
-                else:
-                    self.response.headers['Content-Type'] = 'text/html'
-                    self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
-#        else:
-#            class_rooms = ClassRoomModel.query().fetch()
-#            if self.request.content_type.startswith('application/json'):
-#                return_value = []
-#                for class_room in class_rooms
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.write(json.dumps({'error': 'ClassRoom not found'}))
 
+class ClassRoom(webapp2.RequestHandler):
+    def get(self,class_id):
+        if class_id is not None:
+            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+            if class_room is not None:
+                self.response.headers['Content-Type'] = 'text/html'
+                self.response.write(class_room.tohtml())
+            else:
+                self.response.headers['Content-Type'] = 'text/html'
+                self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
+            
+class ClassRoomListAPI(webapp2.RequestHandler):
+    def get(self):
+        class_rooms = ClassRoomModel.query().fetch()
+        #if getcontenttype(self.request).startswith('application/json'):
+        return_value = []
+        for class_room in class_rooms:
+            return_value.append(class_room.todict())
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(return_value))
 
+class ClassRoomList(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+        self.response.write("For Aeneas to implement")
+                
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/api/classroom', ClassRoom),
-    ('/api/classroom/(.*)', ClassRoom)
+    ('/classroom', ClassRoomList),
+    ('/classroom/(.*)', ClassRoom),
+    ('/api/classroom', ClassRoomListAPI),
+    ('/api/classroom/(.*)', ClassRoomAPI)
 ], debug=True)
 
