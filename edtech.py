@@ -27,6 +27,26 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 class ClassRoomAPI(webapp2.RequestHandler):
+    def get(self,class_id):
+        self.response.headers['Content-Type'] = 'application/json'
+        if class_id is not None:
+            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+            if class_room is not None:
+                self.response.write(json.dumps(class_room.todict()))
+            else:
+                self.response.write(json.dumps({'error': 'ClassRoom not found'}))
+
+class ClassRoom(webapp2.RequestHandler):
+    def get(self,class_id):
+        self.response.headers['Content-Type'] = 'text/html'
+        if class_id is not None:
+            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+            if class_room is not None:
+                self.response.write(class_room.tohtml())
+            else:
+                self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
+            
+class ClassRoomListAPI(webapp2.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'application/json'
         body = json.loads(self.request.body)
@@ -53,26 +73,6 @@ class ClassRoomAPI(webapp2.RequestHandler):
         class_room.put()
         self.response.write(json.dumps(class_room.todict()))
 
-    def get(self,class_id):
-        self.response.headers['Content-Type'] = 'application/json'
-        if class_id is not None:
-            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
-            if class_room is not None:
-                self.response.write(json.dumps(class_room.todict()))
-            else:
-                self.response.write(json.dumps({'error': 'ClassRoom not found'}))
-
-class ClassRoom(webapp2.RequestHandler):
-    def get(self,class_id):
-        self.response.headers['Content-Type'] = 'text/html'
-        if class_id is not None:
-            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
-            if class_room is not None:
-                self.response.write(class_room.tohtml())
-            else:
-                self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
-            
-class ClassRoomListAPI(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
         class_rooms = ClassRoomModel.query().fetch()
