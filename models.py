@@ -4,16 +4,25 @@ from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import images
 import math
 
-class LocationModel(ndb.Model):
+class EdTechModel(ndb.Model):
+    def to_dict(self):
+        result = super(EdTechModel,self).to_dict()
+        result['id'] = self.key.id()
+        return result
+
+class LocationModel(EdTechModel):
     Name = ndb.StringProperty()
     Latitude = ndb.FloatProperty()
     Longitude = ndb.FloatProperty()
 
-class AverageGradeModel(ndb.Model):
+class AverageGradeModel(EdTechModel):
     Date = ndb.DateProperty()
     Grade = ndb.FloatProperty()
 
-class StudentModel(ndb.Model):
+class TutorModel(EdTechModel):
+    Name = ndb.StringProperty()
+
+class StudentModel(EdTechModel):
     Name = ndb.StringProperty()
     SchoolName = ndb.StringProperty()
     Subject = ndb.StringProperty()

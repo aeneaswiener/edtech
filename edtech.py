@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from models import *
+from tutors import *
 
 import webapp2
 import jinja2
@@ -226,6 +227,8 @@ application = webapp2.WSGIApplication([
     ('/students/(.*)', Student),
     ('/api/students', StudentListAPI),
     ('/api/students/(.*)/grades', StudentAverageGradeListAPI),
-    ('/api/students/(.*)', StudentAPI)
+    ('/api/students/(.*)', StudentAPI),
+    ('/api/tutors/(.*)', TutorAPI),
+    ('/api/tutors', TutorListAPI)
 ], debug=True)
 
