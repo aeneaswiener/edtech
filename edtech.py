@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from models import *
+from tutors import *
 
 import webapp2
 import jinja2
@@ -82,12 +83,17 @@ class StudentAPI(webapp2.RequestHandler):
 class Student(webapp2.RequestHandler):
     def get(self,class_id):
         self.response.headers['Content-Type'] = 'text/html'
-        if class_id is not None:
-            student = ndb.Key( 'StudentModel', int(class_id) ).get()
-            if student is not None:
-                self.response.write(student.tohtml())
-            else:
-                self.response.write("<html><head><title>Class Room</title></head><body><h1>Student not found</h1></body></html>")
+        student = ndb.Key( 'StudentModel', int(class_id) ).get()
+        if student is not None:
+            student = student.todict()
+        print student
+
+        template_values = {
+            'student': student,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('student.html')
+        self.response.write(template.render(template_values))
 
 class StudentListAPI(webapp2.RequestHandler):
     def post(self):
@@ -109,7 +115,7 @@ class StudentListAPI(webapp2.RequestHandler):
 
             student = StudentModel(Name=body['Name'],
                                         SchoolName=body['SchoolName'],
-                                        Subjects=subjects,
+                                        Subject=body['Subject'],
                                         SchoolLocation=location,
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
@@ -117,11 +123,10 @@ class StudentListAPI(webapp2.RequestHandler):
             self.response.write(json.dumps(student.todict()))
         else:
             self.response.headers['Content-Type'] = 'text/html'
-            subjects = []
             average_grades = []
             student = StudentModel(Name=self.request.get('Name'),
                                         SchoolName=self.request.get('SchoolName'),
-                                        Subjects=subjects,
+                                        Subject=self.request.get('Subject'),
                                         SchoolLocation=LocationModel(Name=self.request.get('Location_Name'),
                                                                Latitude=float(self.request.get('Latitude')),
                                                                Longitude=float(self.request.get('Longitude'))),
@@ -139,13 +144,20 @@ class StudentListAPI(webapp2.RequestHandler):
 
 class StudentList(webapp2.RequestHandler):
     def get(self):
-        class_rooms = StudentModel.query().fetch()
+        students_object = StudentModel.query().fetch()
+        print students_object
 
-        print class_rooms
         self.response.headers['Content-Type'] = 'text/html'
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(class_rooms))
+        students = []
+        for student in students_object:
+            students.append(student.todict())
+        template_values = {
+            'students': students,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('students.html')
+        self.response.write(template.render(template_values))
 
 class StudentAdd(webapp2.RequestHandler):
     def get(self):
@@ -231,8 +243,9 @@ application = webapp2.WSGIApplication([
     ('/students/add', StudentAdd),
     ('/students/(.*)', Student),
     ('/api/students', StudentListAPI),
-    ('/api/students/(.*)/subjects', StudentSubjectListAPI),
     ('/api/students/(.*)/grades', StudentAverageGradeListAPI),
-    ('/api/students/(.*)', StudentAPI)
+    ('/api/students/(.*)', StudentAPI),
+    ('/api/tutors/(.*)', TutorAPI),
+    ('/api/tutors', TutorListAPI)
 ], debug=True)
 
