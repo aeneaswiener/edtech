@@ -7,6 +7,8 @@ threadsafe: true
 handlers:
 - url: /test-api
   static_dir: test-api
+- url: /static
+  static_dir: templates/static
 - url: /.*
   script: edtech.application
 

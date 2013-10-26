@@ -8,7 +8,6 @@ import logging
 import json
 import os
 
-
 templates_folder = os.path.join(os.path.dirname(__file__),'templates')
 
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -18,7 +17,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 
 class MainPage(webapp2.RequestHandler):
-
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
 
@@ -76,11 +74,18 @@ class ClassRoom(webapp2.RequestHandler):
                     self.response.headers['Content-Type'] = 'text/html'
                     self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
 
-
+class ClassRooms(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values = {
+            'greetings': 'hello',
+        }
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render(template_values))
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/api/classroom', ClassRoom),
+    ('/api/classroom', ClassRooms),
     ('/api/classroom/(.*)', ClassRoom)
 ], debug=True)
 
