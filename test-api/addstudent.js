@@ -26,7 +26,7 @@ $(document).ready(addclass(
 	Name: 'Felix',
 	SchoolName: 'Phoenix High School',
 	NumberOfStudents: 23,
-	Subjects: [ 'Physics', 'Maths' ],
+	Subject: 'Physics',
 	SchoolLocation: { Name: 'Phoenix High School, White City',
 		    Latitude: 51.514490,
 		    Longitude: -0.116849 },
