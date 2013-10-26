@@ -77,7 +77,7 @@ class StudentAPI(webapp2.RequestHandler):
         if class_id is not None:
             student = ndb.Key( 'StudentModel', int(class_id) ).get()
             if student is not None:
-                self.response.write(json.dumps(student.todict()))
+                self.response.write(json.dumps(student.to_dict()))
             else:
                 self.response.write(json.dumps({'error': 'Student not found'}))
 
@@ -86,7 +86,7 @@ class Student(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/html'
         student = ndb.Key( 'StudentModel', int(class_id) ).get()
         if student is not None:
-            student = student.todict()
+            student = student.to_dict()
         print student
 
         template_values = {
@@ -116,7 +116,7 @@ class StudentListAPI(webapp2.RequestHandler):
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             student.put()
-            self.response.write(json.dumps(student.todict()))
+            self.response.write(json.dumps(student.to_dict()))
         else:
             self.response.headers['Content-Type'] = 'text/html'
             average_grades = []
@@ -147,7 +147,7 @@ class StudentList(webapp2.RequestHandler):
 
         students = []
         for student in students_object:
-            students.append(student.todict())
+            students.append(student.to_dict())
         template_values = {
             'students': students,
         }
