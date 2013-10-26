@@ -30,7 +30,7 @@ class MainPage(webapp2.RequestHandler):
 class ClassRoom(webapp2.RequestHandler):
     def post(self):
         logging.error(self.request.headers['Content-Type'])
-        if self.request.headers['Content-Type'].startswith('application/json'):
+        if self.request.content_type.startswith('application/json'):
             body = json.loads(self.request.body)
 
             subjects = []
@@ -60,19 +60,24 @@ class ClassRoom(webapp2.RequestHandler):
         if class_id is not None:
             class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
             if class_room is not None:
-                if self.request.headers['Content-Type'].startswith('application/json'):
+                if self.request.headers['Content_Type'].startswith('application/json'):
                     self.response.headers['Content-Type'] = 'application/json'
                     self.response.write(json.dumps(class_room.todict()))
                 else:
                     self.response.headers['Content-Type'] = 'text/html'
                     self.response.write(class_room.tohtml())
             else:
-                if self.request.headers['Content-Type'].startswith('application/json'):
+                if self.request.headers['Content_Type'].startswith('application/json'):
                     self.response.headers['Content-Type'] = 'application/json'
                     self.response.write(json.dumps({'error': 'ClassRoom not found'}))
                 else:
                     self.response.headers['Content-Type'] = 'text/html'
                     self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
+#        else:
+#            class_rooms = ClassRoomModel.query().fetch()
+#            if self.request.content_type.startswith('application/json'):
+#                return_value = []
+#                for class_room in class_rooms
 
 class ClassRooms(webapp2.RequestHandler):
     def get(self):
