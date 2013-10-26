@@ -26,6 +26,17 @@ class MainPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
+class SignUpPage(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+
+        template_values = {
+            'greetings': 'hello',
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('signup.html')
+        self.response.write(template.render(template_values))
+
 class ClassRoomAPI(webapp2.RequestHandler):
     def get(self,class_id):
         self.response.headers['Content-Type'] = 'application/json'
@@ -108,6 +119,7 @@ class ClassRoomList(webapp2.RequestHandler):
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/signup.html', SignUpPage),
     ('/classroom', ClassRoomList),
     ('/classroom/(.*)', ClassRoom),
     ('/api/classroom', ClassRoomListAPI),
