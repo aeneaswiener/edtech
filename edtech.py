@@ -17,7 +17,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        class_rooms_object = ClassRoomModel.query().fetch()
+        class_rooms_object = StudentModel.query().fetch()
 
         class_rooms = []
         for class_room in class_rooms_object:
@@ -72,7 +72,7 @@ class Student(webapp2.RequestHandler):
                 self.response.write(student.tohtml())
             else:
                 self.response.write("<html><head><title>Class Room</title></head><body><h1>Student not found</h1></body></html>")
-            
+
 class StudentListAPI(webapp2.RequestHandler):
     def post(self):
         if self.request.content_type.startswith('application/json'):
@@ -82,7 +82,7 @@ class StudentListAPI(webapp2.RequestHandler):
             subjects = []
             for subject in body['Subjects']:
                 subjects.append(SubjectModel(Name=subject))
-            
+
             average_grades = []
             for average_grade in body['AverageGrades']:
                 average_grades.append(AverageGradeModel(
@@ -123,14 +123,14 @@ class StudentListAPI(webapp2.RequestHandler):
 
 class StudentList(webapp2.RequestHandler):
     def get(self):
-        class_rooms = ClassRoomModel.query().fetch()
+        class_rooms = StudentModel.query().fetch()
 
         print class_rooms
         self.response.headers['Content-Type'] = 'text/html'
 
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(class_rooms))
-                
+
 class StudentAdd(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
@@ -141,7 +141,7 @@ class StudentAdd(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 class StudentSubjectListAPI(webapp2.RequestHandler):
-    def get(self,class_id):        
+    def get(self,class_id):
         self.response.headers['Content-Type'] = 'application/json'
         student = ndb.Key( 'StudentModel', int(class_id) ).get()
         subjects = []
@@ -175,7 +175,7 @@ class StudentSubjectListAPI(webapp2.RequestHandler):
             self.response.write("<html><body>This is for aeneas</body></html>")
 
 class StudentAverageGradeListAPI(webapp2.RequestHandler):
-    def get(self,class_id):        
+    def get(self,class_id):
         self.response.headers['Content-Type'] = 'application/json'
         student = ndb.Key( 'StudentModel', int(class_id) ).get()
         average_grades = []
