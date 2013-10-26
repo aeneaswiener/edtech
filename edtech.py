@@ -30,14 +30,14 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 class ClassRoom(webapp2.RequestHandler):
-    def put(self):
+    def post(self):
         logging.error(self.request.headers['Content-Type'])
         if self.request.headers['Content-Type'].startswith('application/json'):
             body = json.loads(self.request.body)
 
             subjects = []
             for subject in body['Subjects']:
-                subjects.append(SubjectModel(id=subject))
+                subjects.append(SubjectModel(Name=subject))
 
             average_grades = []
             for average_grade in body['AverageGrades']:
@@ -55,11 +55,32 @@ class ClassRoom(webapp2.RequestHandler):
                                         AverageGrades=average_grades,
                                         Description=body['Description'])
             class_room.put()
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.write(json.dumps(class_room.todict()))
+
+    def get(self,class_id):
+        if class_id is not None:
+            class_room = ndb.Key( 'ClassRoomModel', int(class_id) ).get()
+            if class_room is not None:
+                if self.request.headers['Content-Type'].startswith('application/json'):
+                    self.response.headers['Content-Type'] = 'application/json'
+                    self.response.write(json.dumps(class_room.todict()))
+                else:
+                    self.response.headers['Content-Type'] = 'text/html'
+                    self.response.write(class_room.tohtml())
+            else:
+                if self.request.headers['Content-Type'].startswith('application/json'):
+                    self.response.headers['Content-Type'] = 'application/json'
+                    self.response.write(json.dumps({'error': 'ClassRoom not found'}))
+                else:
+                    self.response.headers['Content-Type'] = 'text/html'
+                    self.response.write("<html><head><title>Class Room</title></head><body><h1>ClassRoom not found</h1></body></html>")
 
 
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/api/classroom', ClassRoom)
+    ('/api/classroom', ClassRoom),
+    ('/api/classroom/(.*)', ClassRoom)
 ], debug=True)
 

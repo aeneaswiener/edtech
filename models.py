@@ -5,7 +5,7 @@ from google.appengine.api import images
 import math
 
 class SubjectModel(ndb.Model):
-    pass
+    Name = ndb.StringProperty()
 
 class LocationModel(ndb.Model):
     Name = ndb.StringProperty()
@@ -25,4 +25,30 @@ class ClassRoomModel(ndb.Model):
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
+    def tohtml(self):
+        return "<html><head><title>Class Room</title></head><body>" + self.Name + "</body></html>"
+
+    def todict(self):
+        subjects = []
+        for subject in self.Subjects:
+            subjects.append(subject.Name)
+
+        average_grades = []
+        for average_grade in self.AverageGrades:
+            average_grades.append({ 'Date': str(average_grade.Date), 'Grade': average_grade.Grade})
+
+        image_key = None
+        if self.Image is not None:
+            image_key = self.Image.urlsafe()
+
+        return { 'id': self.key.id(),
+                 'Name': self.Name,
+                 'SchoolName': self.SchoolName,
+                 'Subjects': subjects,
+                 'Location': { 'Name': self.Location.Name,
+                               'Latitude': self.Location.Latitude,
+                               'Longitude': self.Location.Longitude },
+                 'AverageGrades': average_grades,
+                 'Description': self.Description,
+                 'Image': image_key }
 
