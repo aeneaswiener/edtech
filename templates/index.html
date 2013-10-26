@@ -14,7 +14,12 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+  </head>
   </head>
 
   <body>
@@ -63,6 +68,28 @@
       <h2>Recent Students</h2> 
     {% for student in students %}
     <p>Classrooom name: {{ student.Name }}, Subject: {{ student.Subject }} </p>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Create and populate the data table.
+        var data = google.visualization.arrayToDataTable([
+          ['x', 'Grade'],
+            {% for AverageGrade in student.AverageGrades %}
+            [{{ AverageGrade.Date }}, {{AverageGrade.Grade}}],
+            {% endfor %}
+        ]);
+        // Create and draw the visualization.
+        new google.visualization.LineChart(document.getElementById('visualization-{{student.id}}')).
+            draw(data, {curveType: "function",
+                        vAxis: {title: "Grade"},
+                        hAxis: {title: "Year", format:'#'},
+                        width: 300, height: 200,
+                        vAxis: {maxValue: 10}}
+                );
+      }
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+    <div id="visualization-{{student.id}}" style=""></div>
+
     {% endfor %}
 
       <div class="footer">

@@ -19,16 +19,16 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        class_rooms_object = StudentModel.query().fetch()
-
-        class_rooms = []
-        for class_room in class_rooms_object:
-            class_rooms.append( class_room.todict() )
-        template_values = {
-            'class_rooms': class_rooms,
-        }
+        students_object = StudentModel.query().fetch()
 
         self.response.headers['Content-Type'] = 'text/html'
+
+        students = []
+        for student in students_object:
+            students.append(student.todict())
+        template_values = {
+            'students': students,
+        }
 
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))

@@ -60,13 +60,15 @@
         // Create and draw the visualization.
         new google.visualization.LineChart(document.getElementById('visualization')).
             draw(data, {curveType: "function",
-                        width: 500, height: 400,
+                        vAxis: {title: "Grade"},
+                        hAxis: {title: "Year", format:'#'},
+                        width: 300, height: 200,
                         vAxis: {maxValue: 10}}
                 );
       }
       google.setOnLoadCallback(drawVisualization);
     </script>
-    <div id="visualization" style="width: 500px; height: 400px;"></div>
+    <div id="visualization" style=""></div>
 
             <h2> Add a ndew grade</h2>
 
@@ -96,5 +98,3 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-  </body>
-</html>
