@@ -12,12 +12,19 @@ class LocationModel(ndb.Model):
     Latitude = ndb.FloatProperty()
     Longitude = ndb.FloatProperty()
 
+class AverageGradeModel(ndb.Model):
+    Date = ndb.DateProperty()
+    Grade = ndb.FloatProperty()
+
 class ClassRoomModel(ndb.Model):
     Name = ndb.StringProperty()
     SchoolName = ndb.StringProperty()
     NumberOfStundents = ndb.IntegerProperty()
     Subjects = ndb.StructuredProperty(SubjectsModel, repeated=True)
     Location = ndb.StructuredProperty(LocationModel, repeated=False)
+    AverageGrade = ndb.StructuredProperty(AverageGradeModel, repeated=True)
+    Description = ndb.StringProperty()
+
     
     
         
