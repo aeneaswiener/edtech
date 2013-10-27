@@ -147,9 +147,14 @@
   </a>
   <div class="media-body">
       <h4 class="media-heading">
-        Classrooom name: {{ student.Name }}, Subject: {{ student.Subject }} 
+          Student name: {{ student.Name }} (
+          <a href="/students/{{student.id}}">
+              view profile 
+        </a> )
     </h4>
-    {{ student.Description }}
+    <p>Classes: {{ student.Subject }}</p>
+    <p>Description: {{ student.Description }}</p>
+
   </div>
 </div>
 
