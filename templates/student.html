@@ -27,10 +27,9 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#">Signup</a></li>
         </ul>
-        <h3 class="text-muted">Project name</h3>
+        <h3 class="text-muted">Pupil Pledge</h3>
       </div>
 
       <div class="row marketing">
@@ -59,48 +58,47 @@
               </table>
             </div>
 
-    <script type="text/javascript">
-      function drawVisualization() {
-        // Create and populate the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date'); 
-        data.addColumn('number', 'Grade');
-        data.addColumn('number', 'UK avg.');
-        data.addRows([
-        {% for AverageGrade in obj.AverageGrades %}
-        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}, 60],
-        {% endfor %}
-        ]);
-        // Create and draw the visualization.
-        new google.visualization.LineChart(document.getElementById('visualization')).
-            draw(data, {curveType: "function",
-                        vAxis: {title: "Grade"},
-                        hAxis: {title: "Date", format: 'dd-MM-yy'},
-                        width: 640, height: 320,
-                        vAxis: {maxValue: 10}}
-                );
-      }
-      google.setOnLoadCallback(drawVisualization);
-    </script>
-    <div id="visualization" style=""></div>
+            <script type="text/javascript">
+              function drawVisualization() {
+                // Create and populate the data table.
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date'); 
+                data.addColumn('number', 'Grade');
+                data.addColumn('number', 'UK avg.');
+                data.addRows([
+                {% for AverageGrade in obj.AverageGrades %}
+                [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}, 60],
+                {% endfor %}
+                ]);
+                // Create and draw the visualization.
+                new google.visualization.LineChart(document.getElementById('visualization')).
+                    draw(data, {curveType: "function",
+                                vAxis: {title: "Grade"},
+                                hAxis: {title: "Date", format: 'dd-MM-yy'},
+                                width: 640, height: 320,
+                                vAxis: {maxValue: 10}}
+                        );
+              }
+              google.setOnLoadCallback(drawVisualization);
+            </script>
+            <div id="visualization" style=""></div>
 
-            <h2> Add a ndew grade</h2>
+            <h2> Add a new grade</h2>
 
             <form role="form" action="/api/students/{{ obj.id }}/grades" method="post">
-          <div class="form-group">
-            <label for="Date">Date:</label>
-            <input name="Date" class="form-control" id="Date" placeholder="Date">
-          </div>
-          <div class="form-group">
-          <div class="form-group">
-            <label for="Grade">Grade (in %):</label>
-            <input name="Grade" class="form-control" id="Grade" placeholder="Grade of School">
-          </div>
-          <button name="submit" class="btn btn-default">Submit</button>
-        </form>
+              <div class="form-group">
+                <label for="Date">Date</label>
+                <input name="Date" class="form-control" id="Date" placeholder="Date">
+              </div>
+              <div class="form-group">
+                <label for="Grade">Grade (in %)</label>
+                <input name="Grade" class="form-control" id="Grade" placeholder="Grade of School">
+              </div>
+              <button name="submit" class="btn btn-default">Submit</button>
+            </form>
 
-        </div>
-      </div>
+          </div> <!-- col -->
+        </div> <!-- row marketing -->
 
       <div class="footer">
         <p>&copy; Company 2013</p>
