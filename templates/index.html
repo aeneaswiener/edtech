@@ -117,11 +117,13 @@
     <script type="text/javascript">
       function drawVisualization() {
         // Create and populate the data table.
-        var data = google.visualization.arrayToDataTable([
-          ['x', 'Grade'],
-            {% for AverageGrade in student.AverageGrades %}
-            [{{ AverageGrade.Date }}, {{AverageGrade.Grade}}],
-            {% endfor %}
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date'); 
+        data.addColumn('number', 'Grade');
+        data.addRows([
+        {% for AverageGrade in student.AverageGrades %}
+        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
+        {% endfor %}
         ]);
         // Create and draw the visualization.
         new google.visualization.LineChart(document.getElementById('visualization-{{student.id}}')).
