@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% autoescape true %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -14,6 +15,11 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/static/styles.css">
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+  </head>
   </head>
 
   <body>
@@ -22,27 +28,117 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#">Signup</a></li>
         </ul>
-        <h3 class="text-muted">Project name</h3>
+        <h3 class="text-muted">TutorPledge</h3>
       </div>
 
-      <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#">Sign up today</a></p>
+      <div class="jumbotron" style="background-image:url('static/bg2.png');">
+        <h1>TutorPledge</h1>
+        <p class="lead">Donate your time! Locate a school near you and teach primary or high school students about maths, science or the humanities.</p>
+        <p>
+<form class="form-inline" role="form">
+  <div class="form-group">
+    <label class="sr-only" for="Hours">Password</label>
+    <input style="height: 60px; width: 180px; font-size: 30px;" type="name" class="form-control" id="Hours" placeholder="Hours">
+  </div>
+  <button type="submit" class="btn btn-primary">Pledge time</button>
+</form>
+
       </div>
 
       <div class="row marketing">
-        <div class="col-lg-12">
+        <div class="col-lg-6">
 
-        {% for student in obj %}
-        <p>{{ student.id }} </p>
-        {% endfor %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Donate time, not money</h4>
+            </div>
+            <div class="panel-body">
+              Rather than donating money, why not donate your time? Your contribution will be direct and priceless.
+            </div>
+          </div>
+          
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Teach your subject</h4>
+            </div>
+            <div class="panel-body">
+              Match the subject you teach with your skills and education.           
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Search by location</h4>
+            </div>
+            <div class="panel-body">
+              Enter your postcode and find students nearby who require teaching.           
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">View your students' progress</h4>
+            </div>
+            <div class="panel-body">
+              The students' grades are logged and graphed on TutorPledge. This allows you to directly see the impact you're making on the students' grades!           
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Great for your CV</h4>
+            </div>
+            <div class="panel-body">
+              By volunteering your time to tutor students, you will gain valuable experience and employers will see that you're proactive.           
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Make a difference</h4>
+            </div>
+            <div class="panel-body">
+              By helping out at schools, you will contribute to making sure the students have a successful future.           
+            </div>
+          </div>
 
         </div>
       </div>
+
+      <h2>Recent Students</h2> 
+    {% for student in obj %}
+    <p>Classrooom name: {{ student.Name }}, Subject: {{ student.Subject }} </p>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Create and populate the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date'); 
+        data.addColumn('number', 'Grade');
+        data.addRows([
+        {% for AverageGrade in student.AverageGrades %}
+        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
+        {% endfor %}
+        ]);
+        // Create and draw the visualization.
+        new google.visualization.LineChart(document.getElementById('visualization-{{student.id}}')).
+            draw(data, {curveType: "function",
+                        vAxis: {title: "Grade"},
+                        hAxis: {title: "Date", format: 'yyyy'},
+                        width: 300, height: 200,
+                        vAxis: {maxValue: 10}}
+                );
+      }
+      google.setOnLoadCallback(drawVisualization);
+    </script>
+    <div id="visualization-{{student.id}}" style=""></div>
+
+    {% endfor %}
 
       <div class="footer">
         <p>&copy; Company 2013</p>
@@ -56,3 +152,4 @@
     <!-- Placed at the end of the document so the pages load faster -->
   </body>
 </html>
+{% endautoescape %}
