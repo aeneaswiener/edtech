@@ -33,21 +33,31 @@
         <h3 class="text-muted">Project name</h3>
       </div>
 
-      <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#">Sign up today</a></p>
-      </div>
-
       <div class="row marketing">
         <div class="col-lg-12">
-            <h2>Student ID {{ obj.id }}</h2>
+            <!--<h2>Student ID {{ obj.id }}</h2>-->
+            <h2>Student ID {{ obj.name }}</h2>
 
             <h2>Grades</h2>
-            {% for AverageGrade in obj.AverageGrades %}
-            <p> {{ AverageGrade.Grade }}</p>
-            <p> {{ AverageGrade.Date }}</p>
-            {% endfor %}
+
+            <div class="bs-example">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Average Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for AverageGrade in obj.AverageGrades %}
+                  <tr>
+                    <td> {{ AverageGrade.Date }}</td>
+                    <td> {{ AverageGrade.Grade }}</td>
+                  <tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
 
     <script type="text/javascript">
       function drawVisualization() {
@@ -55,9 +65,10 @@
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Date'); 
         data.addColumn('number', 'Grade');
+        data.addColumn('number', 'UK avg.');
         data.addRows([
         {% for AverageGrade in obj.AverageGrades %}
-        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
+        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}, 60],
         {% endfor %}
         ]);
         // Create and draw the visualization.
