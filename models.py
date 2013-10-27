@@ -12,7 +12,7 @@ class NDBJSONEncoder(json.JSONEncoder):
         if isinstance(obj,ndb.Key):
             return obj.get().to_dict()
         elif isinstance(obj,datetime.date):
-            return obj.strftime('%Y-%m-%d %H:%M:%S')
+            return obj.strftime('%Y-%m-%d')
         return super(NDBJSONEncoder,self).default(obj)
 
 class EdTechModel(ndb.Model):
@@ -29,10 +29,20 @@ class LocationModel(EdTechModel):
 class AverageGradeModel(EdTechModel):
     Date = ndb.DateProperty()
     Grade = ndb.FloatProperty()
+    def __init__(self, **kwds):
+        if 'Date' in kwds:
+            if not isinstance(kwds['Date'],datetime.date):
+                kwds['Date']=datetime.datetime.strptime(kwds['Date'],"%Y-%m-%d") 
+        super(AverageGradeModel,self).__init__(**kwds)
 
 class PledgeModel(EdTechModel):
     HoursPledged = ndb.IntegerProperty()
     Student = ndb.KeyProperty(kind='StudentModel')
+    def __init__(self, **kwds):
+        if 'Student' in kwds:
+            if not isinstance(kwds['Student'],ndb.Key):
+                kwds['Student'] = ndb.Key( 'StudentModel', int(kwds['Student']) )
+        super(PledgeModel, self).__init__(**kwds)
 
 class TutorModel(EdTechModel):
     Name = ndb.StringProperty()
@@ -52,6 +62,6 @@ class StudentModel(EdTechModel):
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
-    def tohtml(self):
-        return "<html><head><title>Class Room</title></head><body>" + self.Name + "</body></html>"
+            
+
 

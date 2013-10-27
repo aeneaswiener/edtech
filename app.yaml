@@ -5,12 +5,10 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /test-api
-  static_dir: test-api
 - url: /static
   static_dir: templates/static
 - url: /.*
-  script: edtech.application
+  script: controller.application
 
 libraries:
 - name: jinja2

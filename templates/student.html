@@ -44,7 +44,7 @@
             <h2>Student ID {{ student.id }}</h2>
 
             <h2>Grades</h2>
-            {% for AverageGrade in student.AverageGrades %}
+            {% for AverageGrade in obj.AverageGrades %}
             <p> {{ AverageGrade.Grade }}</p>
             <p> {{ AverageGrade.Date }}</p>
             {% endfor %}
@@ -56,7 +56,7 @@
         data.addColumn('date', 'Date'); 
         data.addColumn('number', 'Grade');
         data.addRows([
-        {% for AverageGrade in student.AverageGrades %}
+        {% for AverageGrade in obj.AverageGrades %}
         [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
         {% endfor %}
         ]);
