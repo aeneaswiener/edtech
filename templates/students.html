@@ -37,6 +37,7 @@
         <h1>TutorPledge</h1>
         <p class="lead">Donate your time! Locate a school near you and teach primary or high school students about maths, science or the humanities.</p>
         <p>
+
 <form class="form-inline" role="form">
   <div class="form-group">
     <label class="sr-only" for="Hours">Password</label>
@@ -113,16 +114,21 @@
 
       <h2>Recent Students</h2> 
     {% for student in obj %}
-    <p>Classrooom name: {{ student.Name }}, Subject: {{ student.Subject }} </p>
+
+    
+<div class="media well">
+  <a class="pull-left" href="#">
+
     <script type="text/javascript">
       function drawVisualization() {
         // Create and populate the data table.
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Date'); 
         data.addColumn('number', 'Grade');
+        data.addColumn('number', 'UK avg.');
         data.addRows([
         {% for AverageGrade in student.AverageGrades %}
-        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
+        [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}, 60],
         {% endfor %}
         ]);
         // Create and draw the visualization.
@@ -130,7 +136,7 @@
             draw(data, {curveType: "function",
                         vAxis: {title: "Grade"},
                         hAxis: {title: "Date", format: 'yyyy'},
-                        width: 300, height: 200,
+                        width: 350, height: 200,
                         vAxis: {maxValue: 10}}
                 );
       }
@@ -138,8 +144,78 @@
     </script>
     <div id="visualization-{{student.id}}" style=""></div>
 
+  </a>
+  <div class="media-body">
+      <h4 class="media-heading">
+        Classrooom name: {{ student.Name }}, Subject: {{ student.Subject }} 
+    </h4>
+    {{ student.Description }}
+  </div>
+</div>
+
+
     {% endfor %}
 
+    <h2>Student signup</h2>
+
+              <form class="form-horizontal" role="form" action="/students" method="post">
+
+                <div class="form-group">
+                  <label for="Name" class="col-lg-3 control-label">Name</label>
+                  <div class="col-lg-9">
+                    <input name="Name" class="form-control" id="Name" placeholder="Name">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="SchoolName" class="col-lg-3 control-label">Name of School</label>
+                  <div class="col-lg-9">
+                    <input name="SchoolName" class="form-control" id="SchoolName" placeholder="Name of School">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="NumberOfStudents" class="col-lg-3 control-label">Number of Students</label>
+                  <div class="col-lg-9">
+                    <input name="NumberOfStudents" class="form-control" id="NumberOfStudents" placeholder="Number of Students">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="Location_Name" class="col-lg-3 control-label">Location Name</label>
+                  <div class="col-lg-9">
+                    <input name="Location_Name" class="form-control" id="Location_Name" placeholder="Location Name">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="Latitude" class="col-lg-3 control-label">Latitude</label>
+                  <div class="col-lg-9">
+                    <input name="Latitude" class="form-control" id="Latitude" placeholder="Longitude">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Latitude" class="col-lg-3 control-label">Longitude</label>
+                  <div class="col-lg-9">
+                    <input name="Longitude" class="form-control" id="Longitude" placeholder="Longitude">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Description" class="col-lg-3 control-label">Description</label>
+                  <div class="col-lg-9">
+                    <input name="Description" class="form-control" id="Description" placeholder="Description">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-lg-offset-3 col-lg-9">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                  </div>
+                </div>
+
+              </form>
       <div class="footer">
         <p>EdTech Hackathon 2013</p>
       </div>
