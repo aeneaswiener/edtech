@@ -39,7 +39,7 @@
 
             <h2>Grades</h2>
 
-            <div class="bs-example">
+            <div class="media well">
               <table class="table table-hover">
                 <thead>
                   <tr>
@@ -84,24 +84,25 @@
             <div id="visualization" style=""></div>
 
             <h2> Add a new grade</h2>
-
-            <form role="form" action="/api/students/{{ obj.id }}/grades" method="post">
-              <div class="form-group">
-                <label for="Date">Date</label>
-                <input name="Date" class="form-control" id="Date" placeholder="Date">
-              </div>
-              <div class="form-group">
-                <label for="Grade">Grade (in %)</label>
-                <input name="Grade" class="form-control" id="Grade" placeholder="Grade of School">
-              </div>
-              <button name="submit" class="btn btn-default">Submit</button>
-            </form>
+            <div class="media well">
+              <form role="form" action="/api/students/{{ obj.id }}/grades" method="post">
+                <div class="form-group">
+                  <label for="Date">Date</label>
+                  <input name="Date" class="form-control" id="Date" placeholder="Date">
+                </div>
+                <div class="form-group">
+                  <label for="Grade">Grade (percentage %)</label>
+                  <input name="Grade" class="form-control" id="Grade" placeholder="Grade of Student">
+                </div>
+                <button name="submit" class="btn btn-default">Submit</button>
+              </form>
+            </div>
 
           </div> <!-- col -->
         </div> <!-- row marketing -->
 
       <div class="footer">
-        <p>&copy; Company 2013</p>
+        <p>EdTech Hackathon 2013</p>
       </div>
 
     </div> <!-- /container -->
