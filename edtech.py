@@ -96,6 +96,21 @@ class Student(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('student.html')
         self.response.write(template.render(template_values))
 
+class StudentWebView(webapp2.RequestHandler):
+    def get(self,class_id):
+        self.response.headers['Content-Type'] = 'text/html'
+        student = ndb.Key( 'StudentModel', int(class_id) ).get()
+        if student is not None:
+            student = student.to_dict()
+        print student
+
+        template_values = {
+            'student': student,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('student_webview.html')
+        self.response.write(template.render(template_values))
+
 class StudentListAPI(webapp2.RequestHandler):
     def post(self):
         if self.request.content_type.startswith('application/json'):
@@ -203,6 +218,7 @@ application = webapp2.WSGIApplication([
     ('/signin.html', SignInPage),
     ('/students', StudentList),
     ('/students/add', StudentAdd),
+    ('/students/(.*)/grades_graph', StudentWebView),
     ('/students/(.*)', Student),
     ('/api/students', StudentListAPI),
     ('/api/students/(.*)/grades', StudentAverageGradeListAPI),
