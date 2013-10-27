@@ -24,7 +24,13 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         self.redirect('/students')
 
-url_model_mapping = { 'students': StudentModel, 'tutors': TutorModel, 'pledges': PledgeModel }
+url_model_mapping = { 
+    'students': StudentModel, 
+    'tutors': TutorModel, 
+    'pledges': PledgeModel, 
+    'questions': QuestionModel,
+    'responses': ResponseModel
+}
 
 def getObjectKeyFromPath(path):
     components = path.split('/')
