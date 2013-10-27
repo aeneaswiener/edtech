@@ -30,7 +30,7 @@
         data.addColumn('date', 'Date'); 
         data.addColumn('number', 'Grade');
         data.addRows([
-        {% for AverageGrade in student.AverageGrades %}
+        {% for AverageGrade in obj.AverageGrades %}
         [new Date("{{AverageGrade.Date}}"), {{AverageGrade.Grade}}],
         {% endfor %}
         ]);
@@ -38,8 +38,8 @@
         new google.visualization.LineChart(document.getElementById('visualization')).
             draw(data, {curveType: "function",
                         vAxis: {title: "Grade"},
-                        hAxis: {title: "Date", format: 'yyyy'},
-                        width: 200, height: 180,
+                        hAxis: {title: "Date", format: 'dd-MM-yy'},
+                        width: 640, height: 480,
                         vAxis: {maxValue: 10}}
                 );
       }
