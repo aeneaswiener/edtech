@@ -27,12 +27,12 @@ class LocationModel(EdTechModel):
     Longitude = ndb.FloatProperty()
 
 class ResponseModel(EdTechModel):
-    ResponeDate = ndb.DateProperty()
+    ResponeDate = ndb.DateProperty(default=datetime.datetime.now())
     Response = ndb.StringProperty()
 
 class QuestionModel(EdTechModel):
-    DateAsked = ndb.DateProperty()
-    Qustion = ndb.StringProperty()
+    DateAsked = ndb.DateProperty(default=datetime.datetime.now())
+    Question = ndb.StringProperty()
 
 class AverageGradeModel(EdTechModel):
     Date = ndb.DateProperty()

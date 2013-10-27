@@ -91,7 +91,7 @@ class Controller(webapp2.RequestHandler):
         self.display(path,GetAcceptType(self.request))
 
     def post(self,path):
-        key, kind, object_id, template_name = self.getObjectKeyFromPath(path)
+        key, kind, object_id, template_name = getObjectKeyFromPath(path)
         if object_id is not None:
             self.error(403)
         if self.request.content_type.startswith('application/json'):
@@ -99,7 +99,7 @@ class Controller(webapp2.RequestHandler):
             data = json.loads(self.request.body)
         else:
             self.response.headers['Content-Type'] = 'text/html'
-            data = self.request.get_all()
+            data = self.request.arguments()
         obj = kind(parent=key,**data)
         obj.put()
         self.display(path,self.request.content_type)
