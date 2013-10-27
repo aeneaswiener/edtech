@@ -25,6 +25,15 @@ class LocationModel(EdTechModel):
     Name = ndb.StringProperty()
     Latitude = ndb.FloatProperty()
     Longitude = ndb.FloatProperty()
+    def __init__(self, **kwds):
+        if 'Latitude' in kwds:
+            if isinstance(kwds['Latitude'],basestring):
+                kwds['Latitude'] = float(kwds['Latitude'])
+        if 'Longitude' in kwds:
+            if isinstance(kwds['Longitude'],basestring):
+                kwds['Longitude'] = float(kwds['Longitude'])
+        super(LocationModel, self).__init__(**kwds)
+
 
 class ResponseModel(EdTechModel):
     ResponeDate = ndb.DateProperty(default=datetime.datetime.now())
@@ -70,4 +79,3 @@ class StudentModel(EdTechModel):
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
-

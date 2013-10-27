@@ -8,6 +8,7 @@ import datetime
 import logging
 import json
 import os
+import copy
 
 templates_folder = os.path.join(os.path.dirname(__file__),'templates')
 
@@ -74,6 +75,26 @@ def getObjectFromPath(path):
             retval.append(obj.to_dict())
         return retval, template_name
 
+def RequestArgsToDict(args):
+    for arg_key in args.keys():
+        component = arg_key.split('.')
+        if len(component) > 1:
+            prefix = component[0]
+            data = {}
+            # find all arguments with this prefix
+            for arg_key_two in args.keys():
+                component = arg_key_two.split('.')
+                if len(component) > 1:
+                    if component[0] == prefix:
+                        data[component[1]] = copy.deepcopy(args[arg_key_two])
+                        del args[arg_key_two]
+            data = RequestArgsToDict(data)
+            if len(data.keys()) > 0:
+                logging.error(json.dumps(data))
+                args[prefix] = data
+    return args
+        
+
 class Controller(webapp2.RequestHandler):
     def display(self,path,content_type):
         obj, template_name = getObjectFromPath(path)
@@ -99,7 +120,12 @@ class Controller(webapp2.RequestHandler):
             data = json.loads(self.request.body)
         else:
             self.response.headers['Content-Type'] = 'text/html'
-            data = self.request.arguments()
+            data = {}
+            for arg_key in self.request.arguments():
+                data[arg_key] = self.request.get(arg_key)
+            data = RequestArgsToDict(data)
+            logging.error(json.dumps(data,cls=NDBJSONEncoder))
+
         obj = kind(parent=key,**data)
         obj.put()
         self.display(path,self.request.content_type)
