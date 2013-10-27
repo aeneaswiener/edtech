@@ -25,7 +25,7 @@ class MainPage(webapp2.RequestHandler):
 
         students = []
         for student in students_object:
-            students.append(student.todict())
+            students.append(student.to_dict())
         template_values = {
             'students': students,
         }
@@ -39,7 +39,7 @@ class TestPage(webapp2.RequestHandler):
 
         class_rooms = []
         for class_room in class_rooms_object:
-            class_rooms.append( class_room.todict() )
+            class_rooms.append( class_room.to_dict() )
         template_values = {
             'class_rooms': class_rooms,
         }
