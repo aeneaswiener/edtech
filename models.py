@@ -70,6 +70,4 @@ class StudentModel(EdTechModel):
     AverageGrades = ndb.StructuredProperty(AverageGradeModel, repeated=True)
     Description = ndb.StringProperty()
     Image = ndb.BlobKeyProperty()
-            
-
 
